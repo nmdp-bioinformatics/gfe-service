@@ -1,8 +1,8 @@
 ---
 swagger: "2.0"
 info:
-  description: "The gfe and annotation services for annotation,
-  notation, types, HLa and db releases"
+  description: "The REST services for annotation,
+  notation, types, HLA, GFE, typing, feature and db releases"
   version: "0.0.7"
   title: "GFE REST Services"
   contact:
@@ -12,25 +12,26 @@ info:
     url: "https://www.gnu.org/licenses/lgpl.html"
 tags:
   - name: "Sequence Notation"
-    description: "post the sequence and get notation"
+    description: "Return notation by sequence"
   - name: "Sequence Annotation"
-    description: "Post the sequence and get annotation"
+    description: "Return annotation by sequence"
   - name: "Features Of Locus"
-    description: "Returns all features associated with a locus"
+    description: "Return all features associated with a locus"
   - name: "GFE Type-seq Locus"
-    description: "Get HLA and GFE from consensus sequence or GFE notation"
+    description: "Return HLA and GFE from consensus sequence or GFE notation"
   - name: "GFE From HLA"
-    description: "GFE from HLA sequence and locus"
+    description: "Return GFE from HLA,sequence and locus"
   - name: "KIR By GFE"
-    description: "Get Kir response"
+    description: "Return Kir response by GFE"
   - name: "DB Releases"
-    description: "Get all db releases"
+    description: "Return all db releases"
+  - name: "DB Releases By Locus"
+    description: "Return HLA and GFE by imgt_version and locus"
 paths:
   /gfe/{gene}/{locus}:
     post:
       tags:
         - "Sequence Notation"
-      description: "post the sequence and get notation"
       operationId: "gfeNotation_post"
       consumes:
         - "application/json"
@@ -58,15 +59,16 @@ paths:
               sequence:
                 type: 'string'
       responses:
-        201:
-          description: 'Created'
+        200:
+          description: 'OK'
+        400:
+          description: 'Failed to get the notations for sequence'
       x-swagger-router-controller: "swagger_server.controllers.gfe_notation_controller"
 
   /gfe/seq/annotate/{gene}/{locus}:
     post:
       tags:
         - "Sequence Annotation"
-      description: "Post the sequence and get annotation"
       operationId: "gfeAnnotation_post"
       consumes:
         - "application/json"
@@ -94,11 +96,11 @@ paths:
                 type: 'string'
       responses:
         200:
-          description: 'Created'
+          description: 'OK'
           schema:
             $ref: "#/definitions/Typing"
         404:
-          description: "Failed to generate allele call"
+          description: "Failed to annotate the sequence"
           schema:
             $ref: "#/definitions/Error"
       x-swagger-router-controller: "swagger_server.controllers.gfe_annotation_controller"
@@ -107,7 +109,6 @@ paths:
     get:
       tags:
         - "Features Of Locus"
-      description: "Returns all features associated with a locus"
       operationId: "locusfeature_get"
       produces:
         - "application/json"
@@ -119,7 +120,7 @@ paths:
           type: "string"
       responses:
         200:
-          description: "list of features associated with this locus"
+          description: "OK"
         404:
           description: "Failed to load the features of locus"
       x-swagger-router-controller: "swagger_server.controllers.locus_feature_controller"
@@ -128,7 +129,6 @@ paths:
     post:
       tags:
         - "GFE Type-seq Locus"
-      description: "Get HLA and GFE from consensus sequence or GFE notation"
       operationId: "gfeTyping_get"
       produces:
         - "application/json"
@@ -146,21 +146,6 @@ paths:
           required: false
           type: "string"
           default: "3.31.0"
-        - name: "neo4j_url"
-          in: "query"
-          description: "URL for the neo4j graph"
-          required: false
-          type: "string"
-        - name: "user"
-          in: "query"
-          description: "Username for the neo4j graph"
-          required: false
-          type: "string"
-        - name: "password"
-          in: "query"
-          description: "Password for the neo4j graph"
-          required: false
-          type: "string"
         - name: "sequence"
           in: "body"
           description: "Consensus sequence"
@@ -174,11 +159,11 @@ paths:
                 type: 'string'
       responses:
         200:
-          description: "HLA and GFE from consensus sequence"
+          description: "OK"
           schema:
             $ref: "#/definitions/Typing"
         404:
-          description: "Failed to generate allele call"
+          description: "Failed to generate type sequence"
           schema:
             $ref: "#/definitions/Error"
       x-swagger-router-controller: "swagger_server.controllers.gfe_typing_controller"
@@ -187,7 +172,6 @@ paths:
     put:
       tags:
         - "GFE From HLA"
-      description: "GFE from HLA sequence and locus"
       operationId: "gfecreate_post"
       consumes:
         - "application/json"
@@ -203,21 +187,6 @@ paths:
           required: true
           type: "string"
           default: "3.31.0"
-        - name: "neo4j_url"
-          in: "query"
-          description: "URL for the neo4j graph"
-          required: false
-          type: "string"
-        - name: "user"
-          in: "query"
-          description: "Username for the neo4j graph"
-          required: false
-          type: "string"
-        - name: "password"
-          in: "query"
-          description: "Password for the neo4j graph"
-          required: false
-          type: "string"
         - name: "sequence"
           in: "body"
           description: "Consensus sequence"
@@ -231,7 +200,7 @@ paths:
                 type: 'string'
       responses:
         200:
-          description: "created GFE from HLA sequence and locus"
+          description: "OK"
           schema:
             $ref: "#/definitions/Typing"
         404:
@@ -244,7 +213,6 @@ paths:
     get:
       tags:
         - "KIR By GFE"
-      description: "Get Kir response"
       operationId: "findkir_get"
       consumes:
         - "application/json"
@@ -254,24 +222,9 @@ paths:
           description: "Valid GFE "
           required: true
           type: "string"
-        - name: "neo4j_url"
-          in: "query"
-          description: "URL for the neo4j graph"
-          required: false
-          type: "string"
-        - name: "user"
-          in: "query"
-          description: "Username for the neo4j graph"
-          required: false
-          type: "string"
-        - name: "password"
-          in: "query"
-          description: "Password for the neo4j graph"
-          required: false
-          type: "string"
       responses:
         200:
-          description: "created GFE from HLA sequence and locus"
+          description: "OK"
         404:
           description: "Failed to create GFE from HLA sequence and locus"
       x-swagger-router-controller: "swagger_server.controllers.find_kir_controller"
@@ -280,7 +233,6 @@ paths:
     get:
       tags:
         - "DB Releases"
-      description: "Get all db releases"
       operationId: "allreleases_get"
       consumes:
         - "application/json"
@@ -293,16 +245,15 @@ paths:
           default: '3.31.0'
       responses:
         200:
-          description: "listed all HLA_DB"
+          description: "OK"
         404:
-          description: "Failed "
+          description: "Failed to load all db releases"
       x-swagger-router-controller: "swagger_server.controllers.all_releases_controller"
 
   /gfe/{locus}/{imgt_releases}:
     get:
       tags:
         - "DB Releases By Locus"
-      description: "Get all locus and gfe by imgt"
       operationId: "releases_locus_get"
       consumes:
         - "application/json"
@@ -320,9 +271,9 @@ paths:
           type: "string"
       responses:
         200:
-          description: "listed all HLA_DB"
+          description: "OK"
         404:
-          description: "Failed "
+          description: "Failed to get GFE and HLA for the imgt_version and locus"
       x-swagger-router-controller: "swagger_server.controllers.releases_by_locus_controller"
 
 

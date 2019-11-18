@@ -7,12 +7,33 @@ is an example of building a swagger-enabled Flask server.
 
 This example uses the [Connexion](https://github.com/zalando/connexion) library on top of Flask.
 
-To run the server, please execute the following from the root directory:
+Your imgt_db and biosqldb should be in running state
+~to run both databases on docker use these links
 
+#https://hub.docker.com/r/nmdpbioinformatics/imgt_biosqldb/
+#https://hub.docker.com/r/nmdpbioinformatics/gfe-db/
+
+Clone py-gfe locally with this command in the same directory as gfe-service
+#https://github.com/nmdp-bioinformatics/py-gfe.git
+
+To run the server, please execute the following from the root directory of gfe-service:
+
+~Create a virtual environment usin python 3(to avoid dependencies issue use python3 lesser version then [3.7])
 ```
-pip3 install -r requirements.txt
-python main.py
+~virtualenv venv --python=python3
+~ source venv/bin/activate
 ```
+After activating the virtual environment run these commands
+
+~pip3 install -r requirements.txt
+~cd ../py-gfe/
+~git checkout feature/helper-act-service
+~pip install .
+~cd ../gfe-service
+~python main.py
+```
+
+
 
 and open your browser to here:
 

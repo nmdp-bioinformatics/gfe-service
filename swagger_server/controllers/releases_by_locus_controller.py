@@ -17,7 +17,7 @@ neo_dict = yaml.safe_load(neo_file)
 
 
 def releases_locus_get(imgt_releases, locus, neo4j_url=neo_dict['neo4j_url'], user=neo_dict['user'],
-                    password=neo_dict['password']):
+                       password=neo_dict['password']):
     """releases_locus_get
 
         Get all db releases

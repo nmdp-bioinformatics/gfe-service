@@ -18,13 +18,15 @@ Clone py-gfe locally with this command in the same directory as gfe-service
 
 To run the server, please execute the following from the root directory of gfe-service:
 
+Run this command to checkout to the target branch
+~git checkout feature/gfe-api-integration
 ~Create a virtual environment usin python 3(to avoid dependencies issue use python3 lesser version then [3.7])
 ```
 ~virtualenv venv --python=python3
 ~ source venv/bin/activate
 ```
 After activating the virtual environment run these commands
-
+```
 ~pip3 install -r requirements.txt
 ~cd ../py-gfe/
 ~git checkout feature/helper-act-service
@@ -32,9 +34,6 @@ After activating the virtual environment run these commands
 ~cd ../gfe-service
 ~python main.py
 ```
-
-
-
 and open your browser to here:
 
 ```

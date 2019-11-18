@@ -12,8 +12,10 @@ This example uses the [Connexion](https://github.com/zalando/connexion) library 
 
 - Your [imgt_db](https://hub.docker.com/r/nmdpbioinformatics/imgt_biosqldb/) should be running.
 - Your [biosqldb](https://hub.docker.com/r/nmdpbioinformatics/gfe-db/) should be in running state.
-- [py-gfe](https://github.com/nmdp-bioinformatics/py-gfe.git) should be updated with this branch. Otherwise
-you can run: `git clone -b feature/helper-act-service https://github.com/m-haziq/py-gfe.git` and install it from local.
+- [py-gfe](https://github.com/nmdp-bioinformatics/py-gfe.git) should be updated with this 
+[pull request](https://github.com/nmdp-bioinformatics/py-gfe/pull/31). Otherwise
+you can run: `git clone -b feature/helper-act-service https://github.com/m-haziq/py-gfe.git` 
+and install the update from local.
 
 ### Running the Server
 

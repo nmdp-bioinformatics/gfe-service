@@ -1,4 +1,3 @@
-
 from pygfe.models.error import Error
 from pygfe.pygfe import pyGFE
 
@@ -75,8 +74,8 @@ def gfeTyping_get(sequence, locus, imgthla_version="3.31.0", neo4j_url=neo_dict[
         log_data.append(str(err))
         return Error("Failed to connect to graph", log=log_data), 404
 
-    if(not isinstance(gfe_feats, DataFrame)
-       or not isinstance(seq2hla, DataFrame)):
+    if (not isinstance(gfe_feats, DataFrame)
+            or not isinstance(seq2hla, DataFrame)):
         pygfe = pyGFE(graph=graph, seqann=seqann,
                       load_gfe2hla=True, load_seq2hla=True,
                       load_gfe2feat=True, verbose=True)

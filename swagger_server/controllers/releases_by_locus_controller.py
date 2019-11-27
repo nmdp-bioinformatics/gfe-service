@@ -30,7 +30,6 @@ def releases_locus_get(imgt_releases, locus, neo4j_url=neo_dict['neo4j_url'], us
     global gfe_feats
     global gfe2hla
     global seq2hla
-    pygfe = pyGFE()
     log_capture_string = io.StringIO()
     logger = logging.getLogger('')
     logging.basicConfig(datefmt='%m/%d/%Y %I:%M:%S %p',

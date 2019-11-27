@@ -3,6 +3,7 @@ from swagger_server.tests import BaseTestCase
 
 class TestAllReleasesController(BaseTestCase):
     """all releases controller test"""
+
     def test_all_releasess(self):
         """Test case for all releases
         """
@@ -11,8 +12,3 @@ class TestAllReleasesController(BaseTestCase):
             method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
-
-
-if __name__ == '__main__':
-    import unittest
-    unittest.main()

@@ -1,6 +1,6 @@
-
 from swagger_server.tests import BaseTestCase
 import json
+
 
 class TestKIRbyGFE(BaseTestCase):
 
@@ -15,9 +15,3 @@ class TestKIRbyGFE(BaseTestCase):
         )
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
-
-
-if __name__ == '__main__':
-    import unittest
-
-    unittest.main()

@@ -34,7 +34,6 @@ def gfecreate_post(locus, sequence, imgt_version, neo4j_url=neo_dict['neo4j_url'
     global gfe_feats
     global gfe2hla
     global seq2hla
-    pygfe = pyGFE()
     sequence = sequence['sequence']
     log_capture_string = io.StringIO()
     logger = logging.getLogger('')

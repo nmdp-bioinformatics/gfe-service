@@ -168,7 +168,7 @@ paths:
             $ref: "#/definitions/Error"
       x-swagger-router-controller: "swagger_server.controllers.gfe_typing_controller"
 
-  /gfe/{locus}/{imgt_version}:
+  /gfe/create/{locus}/{imgt_version}:
     put:
       tags:
         - "GFE From HLA"

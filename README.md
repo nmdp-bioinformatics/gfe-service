@@ -37,14 +37,6 @@ python main.py
 
 Your local server should be running at: [http://localhost:8080/ui/](http://localhost:8080/ui/)
 
-### Tests:
-
-The directory `swagger_server/tests/` includes all the tests implemented. You can use the command below to run them:
-```
-tox
-```
-> The above command assumes your docker and other dependencies to be running.
-
 ### Further Details:
 
 Your Swagger definition lives here: [http://localhost:8080/swagger.json](http://localhost:8080/swagger.json)

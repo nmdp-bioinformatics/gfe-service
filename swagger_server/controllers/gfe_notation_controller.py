@@ -52,7 +52,7 @@ def gfeNotation_post(sequence, locus, gene):
     except Exception as e:
         print(e)
         log_contents = log_capture_string.getvalue()
-        return Error("An error occurred in getting the gfe of annotation",
+        return Error("An error occured in getting the gfe of annotation",
                      log=log_contents.split("\n")), 404
     feats = []
     for f in res_feature:

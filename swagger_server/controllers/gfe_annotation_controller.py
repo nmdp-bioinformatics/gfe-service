@@ -63,7 +63,7 @@ def gfeAnnotation_post(sequence, gene, locus=None, imgthla_version="3.31.0"):
     except Exception as e:
         print(e)
         log_contents = log_capture_string.getvalue()
-        return Error("An error occured during the annotation",
+        return Error("An error occurred during the annotation",
                      log=log_contents.split("\n")), 404
 
     if not annotation:

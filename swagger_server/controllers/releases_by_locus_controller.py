@@ -1,35 +1,33 @@
-from pygfe.pygfe import pyGFE
-from py2neo import Graph
-from neo4j.exceptions import ServiceUnavailable
-from pygfe.models.error import Error
-import logging
 import io
+import logging
 import yaml
-from pandas import DataFrame
-from seqann.sequence_annotation import BioSeqAnn
+from neo4j.exceptions import ServiceUnavailable
+from py2neo import Graph
+from pygfe.models.error import Error
 
-seqanns = {}
-gfe_feats = None
-gfe2hla = None
-seq2hla = None
-neo_file = open("swagger_server/neo4j.yaml", "r")
-neo_dict = yaml.safe_load(neo_file)
+with open("swagger_server/neo4j.yaml", "r") as neo4j_file:
+    neo_dict = yaml.safe_load(neo4j_file)
 
 
-def releases_locus_get(imgt_releases, locus, neo4j_url=neo_dict['neo4j_url'], user=neo_dict['user'],
+def get_hla_gfe_by(graph, locus, imgt_version):
+    cypher = "MATCH (n:IMGT_HLA)-[r:HAS_GFE]-(g:GFE) WHERE n.locus = \"" + locus + \
+             "\" AND r.imgt_release = \"" + imgt_version + \
+             "\" RETURN n.name as hla, g.name as gfe"
+    result = graph.run(cypher).data()
+    return result
+
+
+def releases_locus_get(imgt_release_version, locus, neo4j_url=neo_dict['neo4j_url'], user=neo_dict['user'],
                        password=neo_dict['password']):
     """releases_locus_get
 
-        Get all db releases
+        Get Alleles and their corresponding GFE By Locus and IMGT version
 
-    :param imgt_releases: Valid imgt releases verion
-    :param locus: Valid imgt releases verion
-    :rtype: list of available db
+    :param imgt_release_version: Valid imgt release version number
+    :param locus: Valid locus name
+    :rtype: list of Alleles and their corresponding GFE
     """
-    global seqanns
-    global gfe_feats
-    global gfe2hla
-    global seq2hla
+
     log_capture_string = io.StringIO()
     logger = logging.getLogger('')
     logging.basicConfig(datefmt='%m/%d/%Y %I:%M:%S %p',
@@ -44,14 +42,6 @@ def releases_locus_get(imgt_releases, locus, neo4j_url=neo_dict['neo4j_url'], us
     ch.setLevel(logging.INFO)
     logger.addHandler(ch)
 
-    db = "".join(imgt_releases.split("."))
-    if db in seqanns:
-        seqann = seqanns[db]
-    else:
-        seqann = BioSeqAnn(verbose=True,
-                           safemode=True, dbversion=db, verbosity=3)
-        seqanns.update({db: seqann})
-
     try:
         graph = Graph(neo4j_url,
                       user=user,
@@ -63,22 +53,10 @@ def releases_locus_get(imgt_releases, locus, neo4j_url=neo_dict['neo4j_url'], us
         log_data.append(str(err))
         return Error("Failed to connect to graph", log=log_data), 404
 
-    if (not isinstance(gfe_feats, DataFrame)
-            or not isinstance(seq2hla, DataFrame)):
-        pygfe = pyGFE(graph=graph, seqann=seqann,
-                      load_gfe2hla=True, load_seq2hla=True,
-                      load_gfe2feat=True, verbose=True)
-        gfe_feats = pygfe.gfe_feats
-        seq2hla = pygfe.seq2hla
-        gfe2hla = pygfe.gfe2hla
-    else:
-        pygfe = pyGFE(graph=graph, seqann=seqann,
-                      gfe2hla=gfe2hla,
-                      gfe_feats=gfe_feats,
-                      seq2hla=seq2hla,
-                      verbose=True)
+    imgt_version = "".join(imgt_release_version.split("."))
+
     try:
-        hla_list = pygfe.list_db_by_locus_imgt(locus, imgt_releases)
+        hla_list = get_hla_gfe_by(graph, locus, imgt_version)
     except Exception as e:
         log_contents = log_capture_string.getvalue()
         print("The Error", e)
@@ -92,4 +70,5 @@ def releases_locus_get(imgt_releases, locus, neo4j_url=neo_dict['neo4j_url'], us
     if not hla_list:
         log_contents = log_capture_string.getvalue()
         return Error("no data record found", log=log_contents.split("\n")), 404
+
     return hla_list

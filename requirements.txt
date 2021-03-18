@@ -1,5 +1,9 @@
-py-gfe
-Flask 
-Flask-Testing 
-connexion
-swagger_ui_bundle
+connexion[swagger-ui]==2.7.0
+Flask==1.1.2
+Flask-Testing==0.8.1
+py-gfe==1.1.2
+pytest==6.2.2
+seq-ann==1.1.0
+swagger-spec-validator==2.7.3
+uWSGI==2.0.19.1
+Werkzeug==1.0.1

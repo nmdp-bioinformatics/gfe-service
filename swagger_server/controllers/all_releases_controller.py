@@ -1,35 +1,35 @@
-from pygfe.pygfe import pyGFE
-from py2neo import Graph
-from neo4j.exceptions import ServiceUnavailable
-from pygfe.models.error import Error
-import logging
 import io
+import logging
 import yaml
-from pandas import DataFrame
-from seqann.sequence_annotation import BioSeqAnn
+from neo4j.exceptions import ServiceUnavailable
+from py2neo import Graph
+from pygfe.models.error import Error
 
-seqanns = {}
-gfe_feats = None
-gfe2hla = None
-seq2hla = None
-neo_file = open("swagger_server/neo4j.yaml", "r")
-neo_dict = yaml.safe_load(neo_file)
+with open("swagger_server/neo4j.yaml", "r") as neo4j_file:
+    neo_dict = yaml.safe_load(neo4j_file)
 
 
-def allreleases_get(imgt_releases, neo4j_url=neo_dict['neo4j_url'], user=neo_dict['user'],
+def all_db_imgt():
+    query = " MATCH(n: IMGT_HLA)-[e: HAS_FEATURE]-(feat:FEATURE)" \
+            + "RETURN DISTINCT e.imgt_release AS HLA_DB ORDER BY e.imgt_release DESC"
+    return query
+
+
+def list_all_db_releases(graph):
+    cypher = all_db_imgt()
+    response_data = graph.run(cypher).to_data_frame()
+    return list(response_data.HLA_DB)
+
+
+def allreleases_get(neo4j_url=neo_dict['neo4j_url'], user=neo_dict['user'],
                     password=neo_dict['password']):
     """allreleases_get
 
         Get all db releases
 
-    :param imgt_releases: Valid imgt releases verion
     :rtype: list of available db
     """
-    global seqanns
-    global gfe_feats
-    global gfe2hla
-    global seq2hla
-    pygfe = pyGFE()
+
     log_capture_string = io.StringIO()
     logger = logging.getLogger('')
     logging.basicConfig(datefmt='%m/%d/%Y %I:%M:%S %p',
@@ -44,14 +44,6 @@ def allreleases_get(imgt_releases, neo4j_url=neo_dict['neo4j_url'], user=neo_dic
     ch.setLevel(logging.INFO)
     logger.addHandler(ch)
 
-    db = "".join(imgt_releases.split("."))
-    if db in seqanns:
-        seqann = seqanns[db]
-    else:
-        seqann = BioSeqAnn(verbose=True,
-                           safemode=True, dbversion=db, verbosity=3)
-        seqanns.update({db: seqann})
-
     try:
         graph = Graph(neo4j_url,
                       user=user,
@@ -63,33 +55,19 @@ def allreleases_get(imgt_releases, neo4j_url=neo_dict['neo4j_url'], user=neo_dic
         log_data.append(str(err))
         return Error("Failed to connect to graph", log=log_data), 404
 
-    if (not isinstance(gfe_feats, DataFrame)
-            or not isinstance(seq2hla, DataFrame)):
-        pygfe = pyGFE(graph=graph, seqann=seqann,
-                      load_gfe2hla=True, load_seq2hla=True,
-                      load_gfe2feat=True, verbose=True)
-        gfe_feats = pygfe.gfe_feats
-        seq2hla = pygfe.seq2hla
-        gfe2hla = pygfe.gfe2hla
-    else:
-        pygfe = pyGFE(graph=graph, seqann=seqann,
-                      gfe2hla=gfe2hla,
-                      gfe_feats=gfe_feats,
-                      seq2hla=seq2hla,
-                      verbose=True)
     try:
-        hla_list = pygfe.list_all_db_releases()
+        db_releases = list_all_db_releases(graph)
     except Exception as e:
         log_contents = log_capture_string.getvalue()
         print("The Error", e)
-        return Error("hla list failed", log=log_contents.split("\n")), 404
+        return Error("Server Error getting IMGT versions.", log=log_contents.split("\n")), 404
 
-    if isinstance(hla_list, Error):
+    if isinstance(db_releases, Error):
         log_contents = log_capture_string.getvalue()
-        hla_list.log = log_contents.split("\n")
-        return hla_list, 404
+        db_releases.log = log_contents.split("\n")
+        return db_releases, 404
 
-    if not hla_list:
+    if not db_releases:
         log_contents = log_capture_string.getvalue()
         return Error("no data record found", log=log_contents.split("\n")), 404
-    return hla_list
+    return db_releases

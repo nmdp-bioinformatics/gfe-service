@@ -6,10 +6,10 @@ info:
   version: "0.0.7"
   title: "GFE REST Services"
   contact:
-    email: "mhalagan@nmdp.org"
+    email: "cibmtr-pypi@nmdp.org"
   license:
-    name: "GNU GENERAL PUBLIC LICENSE"
-    url: "https://www.gnu.org/licenses/lgpl.html"
+    name: "GNU Lesser General Public License version 3"
+    url: "https://opensource.org/licenses/lgpl-3.0.html"
 tags:
   - name: "Sequence Notation"
     description: "Return notation by sequence"
@@ -23,9 +23,9 @@ tags:
     description: "Return GFE from HLA,sequence and locus"
   - name: "KIR By GFE"
     description: "Return Kir response by GFE"
-  - name: "DB Releases"
+  - name: "IMGT DB Versions"
     description: "Return all db releases"
-  - name: "DB Releases By Locus"
+  - name: ""
     description: "Return HLA and GFE by imgt_version and locus"
 paths:
   /gfe/{gene}/{locus}:
@@ -211,8 +211,9 @@ paths:
 
   /gfe/kir/{gfe}:
     get:
+      summary: Get KIR from GFE
       tags:
-        - "KIR By GFE"
+        - "KIR"
       operationId: "findkir_get"
       consumes:
         - "application/json"
@@ -226,23 +227,17 @@ paths:
         200:
           description: "OK"
         404:
-          description: "Failed to create GFE from HLA sequence and locus"
+          description: "Failed to get KIR from GFE"
       x-swagger-router-controller: "swagger_server.controllers.find_kir_controller"
 
-  /gfe/locus/{imgt_releases}:
+  /gfe/imgt-versions:
     get:
+      summary: Get available IMGT DB versions
       tags:
-        - "DB Releases"
+        - "IMGT DB"
       operationId: "allreleases_get"
       consumes:
         - "application/json"
-      parameters:
-        - name: "imgt_releases"
-          in: "path"
-          description: "Valid imgt_releases "
-          required: true
-          type: "string"
-          default: '3.31.0'
       responses:
         200:
           description: "OK"
@@ -250,34 +245,32 @@ paths:
           description: "Failed to load all db releases"
       x-swagger-router-controller: "swagger_server.controllers.all_releases_controller"
 
-  /gfe/{locus}/{imgt_releases}:
+  /gfe/{locus}/{imgt_release_version}:
     get:
+      summary: Get Alleles and their corresponding GFE By Locus and IMGT DB version
       tags:
-        - "DB Releases By Locus"
+        - "GFE"
       operationId: "releases_locus_get"
       consumes:
         - "application/json"
       parameters:
-        - name: "imgt_releases"
+        - name: "imgt_release_version"
           in: "path"
-          description: "Valid imgt_releases "
+          description: "Valid IMGT version "
           required: true
           type: "string"
           default: '3.36.0'
         - name: "locus"
           in: "path"
-          description: "Valid locus"
+          description: "Valid locus name"
           required: true
           type: "string"
       responses:
         200:
           description: "OK"
         404:
-          description: "Failed to get GFE and HLA for the imgt_version and locus"
+          description: "Failed to get GFE and HLA for the IMGT version and locus"
       x-swagger-router-controller: "swagger_server.controllers.releases_by_locus_controller"
-
-
-
 
 definitions:
   Error:

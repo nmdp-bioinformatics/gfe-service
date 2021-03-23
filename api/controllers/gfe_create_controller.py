@@ -4,32 +4,38 @@ from neo4j.exceptions import ServiceUnavailable
 from pygfe.models.error import Error
 import logging
 import io
+import re
+import yaml
 from pandas import DataFrame
 from seqann.sequence_annotation import BioSeqAnn
-import yaml
+from pygfe.models.feature import Feature
 
 seqanns = {}
 gfe_feats = None
 gfe2hla = None
 seq2hla = None
-neo_file = open("swagger_server/neo4j.yaml", "r")
+neo_file = open("neo4j.yaml", "r")
 neo_dict = yaml.safe_load(neo_file)
 
 
-def findkir_get(gfe, neo4j_url=neo_dict['neo4j_url'], user=neo_dict['user'],
-                password=neo_dict['password']):  # noqa: E501
-    """findkir_get
+def gfecreate_post(locus, sequence, imgt_version, neo4j_url=neo_dict['neo4j_url'], user=neo_dict['user'],
+                   password=neo_dict['password']):  # noqa: E501
+    """gfecreate_post
 
-    Get all kir associated with a GFE # noqa: E501
+    Get all features associated with a locus
 
-    :param gfe: Valid gfe of locus
+    :param locus: Valid HLA locus
+    :param sequence: Valid sequence
+    :param imgt_version : db version
     :rtype: Typing
     """
+    imgthla_version = imgt_version
     global seqanns
     global gfe_feats
     global gfe2hla
     global seq2hla
-
+    pygfe = pyGFE()
+    sequence = sequence['sequence']
     log_capture_string = io.StringIO()
     logger = logging.getLogger('')
     logging.basicConfig(datefmt='%m/%d/%Y %I:%M:%S %p',
@@ -37,15 +43,24 @@ def findkir_get(gfe, neo4j_url=neo_dict['neo4j_url'], user=neo_dict['user'],
 
     # create console handler and set level to debug
     ch = logging.StreamHandler(log_capture_string)
-    formatter = logging.Formatter(
-        '%(asctime)s - %(name)-35s - %(levelname)-5s '
-        '- %(funcName)s %(lineno)d: - %(message)s')
+    formatter = logging.Formatter('%(asctime)s - %(name)-35s - %(levelname)-5s'
+                                  ' - %(funcName)s %(lineno)d: - %(message)s')
     ch.setFormatter(formatter)
     ch.setLevel(logging.INFO)
     logger.addHandler(ch)
 
-    seqann = BioSeqAnn()
+    if not re.match(".", imgthla_version):
+        imgthla_version = ".".join([list(imgthla_version)[0],
+                                    "".join(list(imgthla_version)[1:3]),
+                                    list(imgthla_version)[3]])
 
+    db = "".join(imgthla_version.split("."))
+    if db in seqanns:
+        seqann = seqanns[db]
+    else:
+        seqann = BioSeqAnn(verbose=True, safemode=True,
+                           dbversion=db, verbosity=3)
+        seqanns.update({db: seqann})
     try:
         graph = Graph(neo4j_url,
                       user=user,
@@ -72,7 +87,8 @@ def findkir_get(gfe, neo4j_url=neo_dict['neo4j_url'], user=neo_dict['user'],
                       seq2hla=seq2hla,
                       verbose=True)
     try:
-        typing = pygfe.find_gfe_kir(gfe, pygfe.breakup_gfe(gfe))
+        typing = pygfe.gfe_create(locus=locus, sequence=sequence,
+                                  imgtdb_version=db)
     except Exception as e:
         print(e)
         log_contents = log_capture_string.getvalue()
@@ -88,4 +104,18 @@ def findkir_get(gfe, neo4j_url=neo_dict['neo4j_url'], user=neo_dict['user'],
         log_contents = log_capture_string.getvalue()
         return Error("Type with alignment failed",
                      log=log_contents.split("\n")), 404
-    return typing
+    structute_feats = []
+    for f in typing['structure']:
+        fn = Feature(accession=f.accession, rank=f.rank,
+                     term=f.term, sequence=f.sequence)
+        structute_feats.append(fn)
+    anno_feats = []
+    for f in typing['annotation'].structure:
+        fn = Feature(accession=f.accession, rank=f.rank,
+                     term=f.term, sequence=f.sequence)
+        anno_feats.append(fn)
+    return {
+        'gfe': typing['gfe'],
+        'feature': structute_feats,
+        'annotation_feature': anno_feats
+    }

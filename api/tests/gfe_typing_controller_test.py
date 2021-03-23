@@ -1,16 +1,15 @@
-from swagger_server.tests import BaseTestCase
+from api.tests import BaseTestCase
 import json
 
 
-class TestAnnotation(BaseTestCase):
+class TestTyping(BaseTestCase):
 
-    def test_annotation(self):
-        """Test case for annotate_get
+    def test_typing(self):
+        """Test case for typing
         """
         locus = 'HLA-DQB1'
-        gene = False
         response = self.client.post(
-            f'gfe/seq/annotate/{gene}/{locus}',
+            f'/gfe/typing/hla/{locus}',
             data=json.dumps(dict(sequence="AGAACGGGAAGGAGACGCTGCAGCGCACGGGTACCAGGGGCCACGGGGCGCCTCCCTGAT")),
             content_type='application/json'
         )

@@ -5,7 +5,7 @@ from neo4j.exceptions import ServiceUnavailable
 from py2neo import Graph
 from pygfe.models.error import Error
 
-with open("swagger_server/neo4j.yaml", "r") as neo4j_file:
+with open("neo4j.yaml", "r") as neo4j_file:
     neo_dict = yaml.safe_load(neo4j_file)
 
 

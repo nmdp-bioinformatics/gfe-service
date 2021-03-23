@@ -1,41 +1,35 @@
-from pygfe.models.error import Error
 from pygfe.pygfe import pyGFE
-
-from seqann.sequence_annotation import BioSeqAnn
-
 from py2neo import Graph
 from neo4j.exceptions import ServiceUnavailable
-
-from pandas import DataFrame
-
+from pygfe.models.error import Error
 import logging
 import io
-import re
+from pandas import DataFrame
+from seqann.sequence_annotation import BioSeqAnn
 import yaml
 
 seqanns = {}
 gfe_feats = None
 gfe2hla = None
 seq2hla = None
-neo_file = open("swagger_server/neo4j.yaml", "r")
+neo_file = open("neo4j.yaml", "r")
 neo_dict = yaml.safe_load(neo_file)
 
 
-def gfeTyping_get(sequence, locus, imgthla_version="3.31.0", neo4j_url=neo_dict['neo4j_url'], user=neo_dict['user'], password=neo_dict['password']):  # noqa: E501
-    """gfeTyping_get
+def findkir_get(gfe, neo4j_url=neo_dict['neo4j_url'], user=neo_dict['user'],
+                password=neo_dict['password']):  # noqa: E501
+    """findkir_get
 
-    Get HLA and GFE from consensus sequence or GFE notation
+    Get all kir associated with a GFE # noqa: E501
 
-    :param locus: Valid HLA locus
-    :param sequence: Consensus sequence
-    :param imgthla_version: IMGT/HLA DB Version
+    :param gfe: Valid gfe of locus
     :rtype: Typing
     """
     global seqanns
     global gfe_feats
     global gfe2hla
     global seq2hla
-    sequence = sequence['sequence']
+
     log_capture_string = io.StringIO()
     logger = logging.getLogger('')
     logging.basicConfig(datefmt='%m/%d/%Y %I:%M:%S %p',
@@ -50,18 +44,7 @@ def gfeTyping_get(sequence, locus, imgthla_version="3.31.0", neo4j_url=neo_dict[
     ch.setLevel(logging.INFO)
     logger.addHandler(ch)
 
-    if not re.match(".", imgthla_version):
-        imgthla_version = ".".join([list(imgthla_version)[0],
-                                    "".join(list(imgthla_version)[1:3]),
-                                    list(imgthla_version)[3]])
-
-    db = "".join(imgthla_version.split("."))
-    if db in seqanns:
-        seqann = seqanns[db]
-    else:
-        seqann = BioSeqAnn(verbose=True, safemode=True,
-                           dbversion=db, verbosity=3)
-        seqanns.update({db: seqann})
+    seqann = BioSeqAnn()
 
     try:
         graph = Graph(neo4j_url,
@@ -88,9 +71,8 @@ def gfeTyping_get(sequence, locus, imgthla_version="3.31.0", neo4j_url=neo_dict[
                       gfe_feats=gfe_feats,
                       seq2hla=seq2hla,
                       verbose=True)
-
     try:
-        typing = pygfe.type_from_seq(locus, sequence, imgthla_version)
+        typing = pygfe.find_gfe_kir(gfe, pygfe.breakup_gfe(gfe))
     except Exception as e:
         print(e)
         log_contents = log_capture_string.getvalue()
@@ -104,7 +86,6 @@ def gfeTyping_get(sequence, locus, imgthla_version="3.31.0", neo4j_url=neo_dict[
 
     if not typing:
         log_contents = log_capture_string.getvalue()
-        return Error("Type sequence failed", log=log_contents.split("\n")), 404
-
-    typing.gfedb_version = "2.0.0"
+        return Error("Type with alignment failed",
+                     log=log_contents.split("\n")), 404
     return typing

@@ -1,5 +1,4 @@
-from swagger_server.tests import BaseTestCase
-import json
+from api.tests import BaseTestCase
 
 
 class TestKIRbyGFE(BaseTestCase):

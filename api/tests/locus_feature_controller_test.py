@@ -1,4 +1,4 @@
-from swagger_server.tests import BaseTestCase
+from api.tests import BaseTestCase
 
 
 class TestFeatureLocus(BaseTestCase):

@@ -1,10 +1,10 @@
-from swagger_server.tests import BaseTestCase
+from api.tests import BaseTestCase
 
 
 class TestAllReleasesController(BaseTestCase):
     """all releases controller test"""
 
-    def test_all_releasess(self):
+    def test_all_releases(self):
         """Test case for all releases
         """
         response = self.client.open(

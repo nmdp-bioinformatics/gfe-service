@@ -1,8 +1,8 @@
-from swagger_server.tests import BaseTestCase
+from api.tests import BaseTestCase
 
 
 class TestReleasesByLocus(BaseTestCase):
-    def test_relaeases_by_locus(self):
+    def test_releases_by_locus(self):
         """Test case for releases by locus
         """
         locus = 'HLA-DRA'

@@ -63,7 +63,7 @@ paths:
           description: 'OK'
         400:
           description: 'Failed to get the notations for sequence'
-      x-swagger-router-controller: "swagger_server.controllers.gfe_notation_controller"
+      x-swagger-router-controller: "api.controllers.gfe_notation_controller"
 
   /gfe/seq/annotate/{gene}/{locus}:
     post:
@@ -103,7 +103,7 @@ paths:
           description: "Failed to annotate the sequence"
           schema:
             $ref: "#/definitions/Error"
-      x-swagger-router-controller: "swagger_server.controllers.gfe_annotation_controller"
+      x-swagger-router-controller: "api.controllers.gfe_annotation_controller"
 
   /gfe/features/{locus}:
     get:
@@ -123,7 +123,7 @@ paths:
           description: "OK"
         404:
           description: "Failed to load the features of locus"
-      x-swagger-router-controller: "swagger_server.controllers.locus_feature_controller"
+      x-swagger-router-controller: "api.controllers.locus_feature_controller"
 
   /gfe/typing/hla/{locus}:
     post:
@@ -166,7 +166,7 @@ paths:
           description: "Failed to generate type sequence"
           schema:
             $ref: "#/definitions/Error"
-      x-swagger-router-controller: "swagger_server.controllers.gfe_typing_controller"
+      x-swagger-router-controller: "api.controllers.gfe_typing_controller"
 
   /gfe/{locus}/{imgt_version}:
     put:
@@ -207,7 +207,7 @@ paths:
           description: "Failed to create GFE from HLA sequence and locus"
           schema:
             $ref: "#/definitions/Error"
-      x-swagger-router-controller: "swagger_server.controllers.gfe_create_controller"
+      x-swagger-router-controller: "api.controllers.gfe_create_controller"
 
   /gfe/kir/{gfe}:
     get:
@@ -228,7 +228,7 @@ paths:
           description: "OK"
         404:
           description: "Failed to get KIR from GFE"
-      x-swagger-router-controller: "swagger_server.controllers.find_kir_controller"
+      x-swagger-router-controller: "api.controllers.find_kir_controller"
 
   /gfe/imgt-versions:
     get:
@@ -243,7 +243,7 @@ paths:
           description: "OK"
         404:
           description: "Failed to load all db releases"
-      x-swagger-router-controller: "swagger_server.controllers.all_releases_controller"
+      x-swagger-router-controller: "api.controllers.all_releases_controller"
 
   /gfe/{locus}/{imgt_release_version}:
     get:
@@ -270,7 +270,7 @@ paths:
           description: "OK"
         404:
           description: "Failed to get GFE and HLA for the IMGT version and locus"
-      x-swagger-router-controller: "swagger_server.controllers.releases_by_locus_controller"
+      x-swagger-router-controller: "api.controllers.releases_by_locus_controller"
 
 definitions:
   Error:

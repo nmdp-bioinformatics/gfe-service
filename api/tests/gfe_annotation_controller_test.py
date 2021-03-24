@@ -1,17 +1,16 @@
-from swagger_server.tests import BaseTestCase
+from api.tests import BaseTestCase
 import json
 
 
-class TestGfeCreation(BaseTestCase):
+class TestAnnotation(BaseTestCase):
 
-    def test_gfe_creation(self):
-        """Test case for gfe_creation
+    def test_annotation(self):
+        """Test case for annotate_get
         """
         locus = 'HLA-DQB1'
-        imgt_version = '3.31.0'
-        response = self.client.open(
-            f'/gfe/{locus}/{imgt_version}',
-            method='PUT',
+        gene = False
+        response = self.client.post(
+            f'gfe/seq/annotate/{gene}/{locus}',
             data=json.dumps(dict(sequence="AGAACGGGAAGGAGACGCTGCAGCGCACGGGTACCAGGGGCCACGGGGCGCCTCCCTGAT")),
             content_type='application/json'
         )

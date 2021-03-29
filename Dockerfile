@@ -1,12 +1,16 @@
-FROM nmdpbioinformatics/py-gfe
+FROM nmdpbioinformatics/py-gfe:1.1.3
 
-LABEL maintainer="nmdp-bioinformatics"
+LABEL MAINTAINER NMDP Bioinformatics https://github.com/nmdp-bioinformatics
 
-COPY . /app
 WORKDIR /app
 
+COPY requirements-deploy.txt /app/requirements.txt
 RUN pip install -r requirements.txt
 
-ENTRYPOINT [ "python" ]
+COPY api /app/api
+COPY spec /app/spec
 
-CMD [ "main.py" ]
+COPY main.py /app/
+COPY neo4j.yaml /app/
+
+CMD [ "python", "main.py" ]

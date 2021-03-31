@@ -12,7 +12,7 @@ import re
 seqanns = {}
 
 
-def gfeAnnotation_post(sequence, gene, locus=None, imgthla_version="3.31.0"):
+def gfeAnnotation_post(sequence, locus, gene=None, imgtdb_version="3.31.0"):
     """gfeAnnotation_post
 
         Get all kir associated with a GFE # noqa: E501
@@ -20,6 +20,7 @@ def gfeAnnotation_post(sequence, gene, locus=None, imgthla_version="3.31.0"):
         :param sequence: Valid sequence fasta
         :param gene: the KIR param true or false
         :param locus: Valid Locus
+        :param imgtdb_version:
         :rtype: Typing
         """
     global seqanns
@@ -27,12 +28,12 @@ def gfeAnnotation_post(sequence, gene, locus=None, imgthla_version="3.31.0"):
     typing = Typing()
     sequence = SeqRecord(seq=Seq(sequence['sequence']))
 
-    if not re.match(".", imgthla_version):
-        imgthla_version = ".".join([list(imgthla_version)[0],
-                                    "".join(list(imgthla_version)[1:3]),
-                                    list(imgthla_version)[3]])
+    if not re.match(".", imgtdb_version):
+        imgtdb_version = ".".join([list(imgtdb_version)[0],
+                                    "".join(list(imgtdb_version)[1:3]),
+                                   list(imgtdb_version)[3]])
 
-    db = "".join(imgthla_version.split("."))
+    db = "".join(imgtdb_version.split("."))
     log_capture_string = io.StringIO()
     logger = logging.getLogger('')
     logging.basicConfig(datefmt='%m/%d/%Y %I:%M:%S %p',
@@ -47,13 +48,16 @@ def gfeAnnotation_post(sequence, gene, locus=None, imgthla_version="3.31.0"):
     ch.setLevel(logging.INFO)
     logger.addHandler(ch)
 
+    # TODO: Use `gene` or locus to figure out the gene-family
     if db in seqanns:
         seqann = seqanns[db]
     elif gene:
-        seqann = BioSeqAnn(verbose=True, safemode=True,
-                           dbversion=db, verbosity=3, kir=True)
-        seqanns.update({db: seqann})
+        if gene.upper() == 'KIR':
+            seqann = BioSeqAnn(verbose=True, safemode=True,
+                               dbversion=db, verbosity=3, kir=True)
+            seqanns.update({db: seqann})
     else:
+        # Defaults to HLA
         seqann = BioSeqAnn(verbose=True, safemode=True,
                            dbversion=db, verbosity=3)
         seqanns.update({db: seqann})
@@ -84,5 +88,5 @@ def gfeAnnotation_post(sequence, gene, locus=None, imgthla_version="3.31.0"):
 
     typing.features = feats
     typing.gfe = annotation.gfe
-    typing.imgtdb_version = imgthla_version
+    typing.imgtdb_version = imgtdb_version
     return typing

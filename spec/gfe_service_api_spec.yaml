@@ -1,241 +1,34 @@
 ---
 swagger: "2.0"
 info:
-  description: "The REST services for annotation,
-  notation, types, HLA, GFE, typing, feature and db releases"
-  version: "0.0.7"
-  title: "GFE REST Services"
+  title: GFE REST Services
+  description: |
+    REST services for curating and computing with GFE
+  version: 0.1.0
   contact:
-    email: "cibmtr-pypi@nmdp.org"
+    email: cibmtr-pypi@nmdp.org
   license:
-    name: "GNU Lesser General Public License version 3"
-    url: "https://opensource.org/licenses/lgpl-3.0.html"
+    name: GNU Lesser General Public License version 3
+    url: https://opensource.org/licenses/lgpl-3.0.html
+basePath: /v1
 tags:
-  - name: "Sequence Notation"
-    description: "Return notation by sequence"
+  - name: IMGT
+    description: "Available IMGT DB releases"
   - name: "Sequence Annotation"
-    description: "Return annotation by sequence"
-  - name: "Features Of Locus"
-    description: "Return all features associated with a locus"
-  - name: "GFE Type-seq Locus"
-    description: "Return HLA and GFE from consensus sequence or GFE notation"
-  - name: "GFE From HLA"
-    description: "Return GFE from HLA,sequence and locus"
+    description: "Annotation by sequence"
+  - name: Features
+    description: "Features associated with a locus"
+  - name: GFE
+    description: Create and Retrieve GFE
   - name: "KIR By GFE"
     description: "Return Kir response by GFE"
-  - name: "IMGT DB Versions"
-    description: "Return all db releases"
-  - name: ""
-    description: "Return HLA and GFE by imgt_version and locus"
 paths:
-  /gfe/{gene}/{locus}:
-    post:
-      tags:
-        - "Sequence Notation"
-      operationId: "gfeNotation_post"
-      consumes:
-        - "application/json"
-      parameters:
-        - name: "locus"
-          in: "path"
-          description: "Valid HLA locus"
-          required: true
-          type: "string"
-        - name: "gene"
-          in: "path"
-          description: "KIR flag for gene"
-          required: true
-          type: "boolean"
-          default: false
-        - in: 'body'
-          name: 'sequence'
-          required: true
-          description: 'add the sequence to get the result'
-          schema:
-            type: 'object'
-            required:
-              - 'sequence'
-            properties:
-              sequence:
-                type: 'string'
-      responses:
-        200:
-          description: 'OK'
-        400:
-          description: 'Failed to get the notations for sequence'
-      x-swagger-router-controller: "api.controllers.gfe_notation_controller"
-
-  /gfe/seq/annotate/{gene}/{locus}:
-    post:
-      tags:
-        - "Sequence Annotation"
-      operationId: "gfeAnnotation_post"
-      consumes:
-        - "application/json"
-      parameters:
-        - name: "locus"
-          in: "path"
-          description: "Valid HLA locus"
-          required: true
-          type: "string"
-        - name: "gene"
-          in: "path"
-          description: "KIR flag for gene"
-          required: true
-          type: "boolean"
-        - in: 'body'
-          name: 'sequence'
-          required: true
-          description: 'add the sequence to get the result'
-          schema:
-            type: 'object'
-            required:
-              - 'sequence'
-            properties:
-              sequence:
-                type: 'string'
-      responses:
-        200:
-          description: 'OK'
-          schema:
-            $ref: "#/definitions/Typing"
-        404:
-          description: "Failed to annotate the sequence"
-          schema:
-            $ref: "#/definitions/Error"
-      x-swagger-router-controller: "api.controllers.gfe_annotation_controller"
-
-  /gfe/features/{locus}:
-    get:
-      tags:
-        - "Features Of Locus"
-      operationId: "locusfeature_get"
-      produces:
-        - "application/json"
-      parameters:
-        - name: "locus"
-          in: "path"
-          description: "string containing HLA locus"
-          required: true
-          type: "string"
-      responses:
-        200:
-          description: "OK"
-        404:
-          description: "Failed to load the features of locus"
-      x-swagger-router-controller: "api.controllers.locus_feature_controller"
-
-  /gfe/typing/hla/{locus}:
-    post:
-      tags:
-        - "GFE Type-seq Locus"
-      operationId: "gfeTyping_get"
-      produces:
-        - "application/json"
-      consumes:
-        - "application/json"
-      parameters:
-        - name: "locus"
-          in: "path"
-          description: "Valid HLA locus"
-          required: true
-          type: "string"
-        - name: "imgthla_version"
-          in: "query"
-          description: "IMGT/HLA DB Version"
-          required: false
-          type: "string"
-          default: "3.31.0"
-        - name: "sequence"
-          in: "body"
-          description: "Consensus sequence"
-          required: true
-          schema:
-            type: 'object'
-            required:
-              - 'sequence'
-            properties:
-              sequence:
-                type: 'string'
-      responses:
-        200:
-          description: "OK"
-          schema:
-            $ref: "#/definitions/Typing"
-        404:
-          description: "Failed to generate type sequence"
-          schema:
-            $ref: "#/definitions/Error"
-      x-swagger-router-controller: "api.controllers.gfe_typing_controller"
-
-  /gfe/{locus}/{imgt_version}:
-    put:
-      tags:
-        - "GFE From HLA"
-      operationId: "gfecreate_post"
-      consumes:
-        - "application/json"
-      parameters:
-        - name: "locus"
-          in: "path"
-          description: "Valid HLA locus"
-          required: true
-          type: "string"
-        - name: "imgt_version"
-          in: "path"
-          description: "IMGT/HLA DB Version"
-          required: true
-          type: "string"
-          default: "3.31.0"
-        - name: "sequence"
-          in: "body"
-          description: "Consensus sequence"
-          required: true
-          schema:
-            type: 'object'
-            required:
-              - 'sequence'
-            properties:
-              sequence:
-                type: 'string'
-      responses:
-        200:
-          description: "OK"
-          schema:
-            $ref: "#/definitions/Typing"
-        404:
-          description: "Failed to create GFE from HLA sequence and locus"
-          schema:
-            $ref: "#/definitions/Error"
-      x-swagger-router-controller: "api.controllers.gfe_create_controller"
-
-  /gfe/kir/{gfe}:
-    get:
-      summary: Get KIR from GFE
-      tags:
-        - "KIR"
-      operationId: "findkir_get"
-      consumes:
-        - "application/json"
-      parameters:
-        - name: "gfe"
-          in: "path"
-          description: "Valid GFE "
-          required: true
-          type: "string"
-      responses:
-        200:
-          description: "OK"
-        404:
-          description: "Failed to get KIR from GFE"
-      x-swagger-router-controller: "api.controllers.find_kir_controller"
-
-  /gfe/imgt-versions:
+  /imgt-versions:
     get:
       summary: Get available IMGT DB versions
       tags:
-        - "IMGT DB"
-      operationId: "allreleases_get"
+        - IMGT
+      operationId: allreleases_get
       consumes:
         - "application/json"
       responses:
@@ -245,7 +38,116 @@ paths:
           description: "Failed to load all db releases"
       x-swagger-router-controller: "api.controllers.all_releases_controller"
 
-  /gfe/{locus}/{imgt_release_version}:
+  /annotation/{locus}:
+    post:
+      summary: Annotate a sequence for a locus
+      tags:
+        - "Sequence Annotation"
+      operationId: gfeAnnotation_post
+      consumes:
+        - "application/json"
+      parameters:
+        - name: locus
+          in: path
+          description: "Valid HLA locus"
+          required: true
+          type: string
+        - name: gene_family
+          description: "Gene Family, eg: HLA, KIR"
+          type: string
+          in: query
+          required: false
+        - in: body
+          name: sequence
+          required: true
+          description: Sequence to annotate
+          schema:
+            type: object
+            required:
+              - sequence
+            properties:
+              sequence:
+                type: string
+                example:
+                  AGAGACTCTCCCGAGGATTTCGTGTACCAGTTTAAGGCCATGTGCTACTTCACC
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/Typing"
+        404:
+          description: "Failed to annotate the sequence"
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "api.controllers.gfe_annotation_controller"
+
+  /feature/{locus}:
+    get:
+      summary: Load All Features
+      description: |
+        For the given locus, retrieve all associated features.
+        This will result in a large result.
+      tags:
+        - Features
+      operationId: locusfeature_get
+      produces:
+        - "application/json"
+      parameters:
+        - name: locus
+          in: path
+          description: HLA locus
+          required: true
+          type: string
+      responses:
+        200:
+          description: OK
+        404:
+          description: "Failed to load the features of locus"
+      x-swagger-router-controller: "api.controllers.locus_feature_controller"
+
+  /gfe/{locus}:
+    put:
+      tags:
+        - GFE
+      operationId: "gfecreate_post"
+      consumes:
+        - "application/json"
+      parameters:
+        - name: locus
+          in: path
+          description: Valid HLA locus
+          required: true
+          type: string
+        - name: imgt_version
+          in: query
+          description: IMGT/HLA DB Version
+          required: true
+          type: string
+          default: "3.31.0"
+        - name: sequence
+          in: body
+          description: Consensus sequence
+          required: true
+          schema:
+            type: object
+            required:
+              - sequence
+            properties:
+              sequence:
+                type: string
+                example:
+                  ACTGACTGACTGACTGACTGACTGACTGACTGACTGACTGACTGACTG
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/Typing"
+        404:
+          description: Failed to create GFE from HLA sequence and locus
+          schema:
+            $ref: "#/definitions/Error"
+      x-swagger-router-controller: "api.controllers.gfe_create_controller"
+
     get:
       summary: Get Alleles and their corresponding GFE By Locus and IMGT DB version
       tags:
@@ -254,17 +156,17 @@ paths:
       consumes:
         - "application/json"
       parameters:
-        - name: "imgt_release_version"
-          in: "path"
-          description: "Valid IMGT version "
-          required: true
-          type: "string"
-          default: '3.36.0'
-        - name: "locus"
-          in: "path"
+        - name: locus
+          in: path
           description: "Valid locus name"
           required: true
-          type: "string"
+          type: string
+        - name: imgt_release_version
+          in: query
+          description: "Valid IMGT version "
+          required: true
+          type: string
+          default: '3.36.0'
       responses:
         200:
           description: "OK"
@@ -272,9 +174,10 @@ paths:
           description: "Failed to get GFE and HLA for the IMGT version and locus"
       x-swagger-router-controller: "api.controllers.releases_by_locus_controller"
 
+
 definitions:
   Error:
-    type: "object"
+    type: object
     required:
       - "Message"
       - "gfedb_version"
@@ -282,56 +185,56 @@ definitions:
       - "pygfe_version"
     properties:
       Message:
-        type: "string"
+        type: string
       pygfe_version:
-        type: "string"
+        type: string
       gfedb_version:
-        type: "string"
+        type: string
       imgtdb_version:
-        type: "string"
+        type: string
       log:
-        type: "array"
+        type: array
         items:
-          type: "string"
+          type: string
       type:
-        type: "string"
+        type: string
   Typing:
-    type: "object"
+    type: object
     properties:
       seqdiff:
-        type: "array"
+        type: array
         items:
           $ref: "#/definitions/Seqdiff"
       protdiff:
-        type: "array"
+        type: array
         items:
           $ref: "#/definitions/Seqdiff"
       features:
-        type: "array"
+        type: array
         items:
           $ref: "#/definitions/Feature"
       novel_features:
-        type: "array"
+        type: array
         items:
           $ref: "#/definitions/Feature"
       gfe:
-        type: "string"
+        type: string
       hla:
-        type: "string"
+        type: string
       closest_gfe:
-        type: "string"
+        type: string
       full_gene_accession:
-        type: "integer"
+        type: integer
       differences:
-        type: "integer"
+        type: integer
       status:
-        type: "string"
+        type: string
       pygfe_version:
-        type: "string"
+        type: string
       gfedb_version:
-        type: "string"
+        type: string
       imgtdb_version:
-        type: "string"
+        type: string
     example:
       gfe: "HLA-Aw1-1-7-20-10-32-7-1-1-1-6-1-5-3-5-1-1"
       hla: "HLA-A*01:01:01:01"
@@ -367,18 +270,18 @@ definitions:
       gfe_version: "0.0.1"
       gfedb_version: "0.0.1"
   Seqdiff:
-    type: "object"
+    type: object
     properties:
       term:
-        type: "string"
+        type: string
       rank:
-        type: "integer"
+        type: integer
       location:
-        type: "integer"
+        type: integer
       ref:
-        type: "string"
+        type: string
       inseq:
-        type: "string"
+        type: string
     example:
       term: "intron"
       rank: 1
@@ -386,16 +289,16 @@ definitions:
       ref: "A"
       inseq: "G"
   Feature:
-    type: "object"
+    type: object
     properties:
       accession:
-        type: "integer"
+        type: integer
       rank:
-        type: "integer"
+        type: integer
       sequence:
-        type: "string"
+        type: string
       term:
-        type: "string"
+        type: string
     example:
       accession: 1
       locus: "HLA-A"

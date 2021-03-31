@@ -1,0 +1,29 @@
+openapi: 3.0.1
+info:
+  title: GFE Service
+  description: |
+    The REST services for annotation,
+    notation, types, HLA, GFE, typing, feature and db releases.
+  version: 1.0.0
+  contact:
+    name: NMDP Bioinformatics
+    url: https://github.com/nmdp-bioinformatics/gfe
+    email: cibmtr-pypi@nmdp.org
+  license:
+    name: GNU Lesser General Public License version 3
+    url: https://opensource.org/licenses/lgpl-3.0.html
+servers:
+  - url: 'https://api.example.com'
+paths:
+  /gfe/imgt-versions:
+    get:
+      summary: Get available IMGT DB versions
+      tags:
+        - "IMGT DB"
+      operationId: "allreleases_get"
+      responses:
+        200:
+          description: "OK"
+        404:
+          description: "Failed to load all db releases"
+      x-swagger-router-controller: "api.controllers.all_releases_controller"

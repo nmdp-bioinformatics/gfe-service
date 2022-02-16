@@ -1,0 +1,64 @@
+openapi: 3.0.3
+info:
+  title: SLUG Match
+  description: Match a pair of SLUGs
+  version: 0.0.1
+servers:
+  - url: 'http://localhost:8080'
+tags:
+  - name: SLUG Match
+    description: Match patient and donor SLUGs
+paths:
+  /match:
+    post:
+      tags:
+        - SLUG Match
+      operationId: api.slug_match_controller
+      summary: Match SLUGs
+      description: |
+        Given a SLUG(Single Locus Unphased Genotype) in GL String,
+        calculate if they match.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                patient_slug:
+                  description: Patient SLUG in GL String
+                  type: string
+                  example: "HLA-A*13:02+HLA-A*30:01"
+                donor_slug:
+                  description: Donor SLUG in GL String
+                  type: string
+                  example: "HLA-A*13:02+HLA-A*30:01"
+      responses:
+        200:
+          description: SLUG Match Result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  matched:
+                    description: Match Occurred ?
+                    type: string
+                    example: "Matched"
+                  patient_slug:
+                    description: Patient SLUG in GL String
+                    type: string
+                    example: "HLA-A*13:02+HLA-A*30:01"
+                  donor_slug:
+                    description: Donor SLUG in GL String
+                    type: string
+                    example: "HLA-A*13:02+HLA-A*30:01"
+        400:
+          description: Invalid GL String
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    description: Describes what went wrong
+                    type: string
+                    example: "Invalid HLA locus"

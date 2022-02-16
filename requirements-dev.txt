@@ -1,0 +1,6 @@
+allure-behave==2.9.43
+flake8==3.9.2
+bump2version==1.0.1
+coverage==5.5
+wheel==0.37.0
+pre-commit==2.14.1

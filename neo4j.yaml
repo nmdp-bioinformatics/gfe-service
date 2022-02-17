@@ -1,0 +1,6 @@
+---
+  user: "neo4j"
+  password: "gfedb"
+#  neo4j_url: "http://0.0.0.0:7474"
+#  neo4j_url: "http://neo4j.b12x.org:80"
+  neo4j_url: "http://35.169.153.177:7474"

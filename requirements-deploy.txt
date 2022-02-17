@@ -1,2 +1,2 @@
-connexion[swagger-ui]==2.9.0
+connexion[swagger-ui]==2.11.1
 gunicorn==20.1.0

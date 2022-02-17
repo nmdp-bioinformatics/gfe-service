@@ -1,64 +1,101 @@
 openapi: 3.0.3
 info:
-  title: SLUG Match
-  description: Match a pair of SLUGs
-  version: 0.0.1
+    title: GFE REST Services
+    description: |
+        REST services for curating and computing with GFE
+    version: 0.2.0
+    contact:
+        email: cibmtr-pypi@nmdp.org
+    license:
+        name: GNU Lesser General Public License version 3
+        url: https://opensource.org/licenses/lgpl-3.0.html
 servers:
-  - url: 'http://localhost:8080'
+    -   url: 'http://localhost:8080'
 tags:
-  - name: SLUG Match
-    description: Match patient and donor SLUGs
+    -   name: IMGT
+        description: "Available IMGT DB releases"
+    -   name: "Sequence Annotation"
+        description: "Annotation by sequence"
+    -   name: Features
+        description: "Features associated with a locus"
+    -   name: GFE
+        description: Create and Retrieve GFE
+    -   name: "KIR By GFE"
+        description: "Return Kir response by GFE"
+    -   name: SLUG Match
+        description: Match patient and donor SLUGs
 paths:
-  /match:
-    post:
-      tags:
-        - SLUG Match
-      operationId: api.slug_match_controller
-      summary: Match SLUGs
-      description: |
-        Given a SLUG(Single Locus Unphased Genotype) in GL String,
-        calculate if they match.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                patient_slug:
-                  description: Patient SLUG in GL String
-                  type: string
-                  example: "HLA-A*13:02+HLA-A*30:01"
-                donor_slug:
-                  description: Donor SLUG in GL String
-                  type: string
-                  example: "HLA-A*13:02+HLA-A*30:01"
-      responses:
-        200:
-          description: SLUG Match Result
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  matched:
-                    description: Match Occurred ?
-                    type: string
-                    example: "Matched"
-                  patient_slug:
-                    description: Patient SLUG in GL String
-                    type: string
-                    example: "HLA-A*13:02+HLA-A*30:01"
-                  donor_slug:
-                    description: Donor SLUG in GL String
-                    type: string
-                    example: "HLA-A*13:02+HLA-A*30:01"
-        400:
-          description: Invalid GL String
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    description: Describes what went wrong
-                    type: string
-                    example: "Invalid HLA locus"
+    /imgt-versions:
+        get:
+            summary: Get available IMGT DB versions
+            tags:
+                - IMGT
+            operationId: api.imgt_versions
+            responses:
+                200:
+                    description: Version Numbers of Available IMGT DB
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    imgt_versions:
+                                        description: IMGT DB Versions
+                                        type: array
+                                        items:
+                                            type: string
+                404:
+                    description: "Failed to load all db releases"
+    /match:
+        post:
+            tags:
+                - SLUG Match
+            operationId: api.slug_match_controller
+            summary: Match SLUGs
+            description: |
+                Given a SLUG(Single Locus Unphased Genotype) in GL String,
+                calculate if they match.
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            properties:
+                                patient_slug:
+                                    description: Patient SLUG in GL String
+                                    type: string
+                                    example: "HLA-A*13:02+HLA-A*30:01"
+                                donor_slug:
+                                    description: Donor SLUG in GL String
+                                    type: string
+                                    example: "HLA-A*13:02+HLA-A*30:01"
+            responses:
+                200:
+                    description: SLUG Match Result
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    matched:
+                                        description: Match Occurred ?
+                                        type: string
+                                        example: "Matched"
+                                    patient_slug:
+                                        description: Patient SLUG in GL String
+                                        type: string
+                                        example: "HLA-A*13:02+HLA-A*30:01"
+                                    donor_slug:
+                                        description: Donor SLUG in GL String
+                                        type: string
+                                        example: "HLA-A*13:02+HLA-A*30:01"
+                400:
+                    description: Invalid GL String
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        description: Describes what went wrong
+                                        type: string
+                                        example: "Invalid HLA locus"

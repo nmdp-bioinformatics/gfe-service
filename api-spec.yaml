@@ -14,23 +14,19 @@ servers:
 tags:
     -   name: IMGT
         description: "Available IMGT DB releases"
-    -   name: "Sequence Annotation"
-        description: "Annotation by sequence"
-    -   name: Features
-        description: "Features associated with a locus"
     -   name: GFE
         description: Create and Retrieve GFE
-    -   name: "KIR By GFE"
-        description: "Return Kir response by GFE"
-    -   name: SLUG Match
-        description: Match patient and donor SLUGs
+    -   name: "Sequence Annotation"
+        description: Annotation by sequence
 paths:
     /imgt-versions:
         get:
-            summary: Get available IMGT DB versions
+            summary: IMGT DB versions in the DB
             tags:
                 - IMGT
             operationId: api.imgt_versions
+            description: Versions of IMGT DB Alleles in GFE DB
+
             responses:
                 200:
                     description: Version Numbers of Available IMGT DB
@@ -44,58 +40,97 @@ paths:
                                         type: array
                                         items:
                                             type: string
+                                        example:
+                                            - "3450"
+                                            - "3460"
+                                            - "3470"
                 404:
                     description: "Failed to load all db releases"
-    /match:
-        post:
+
+    /who/{who_name}:
+        get:
+            summary: Get GFE for a WHO name
             tags:
-                - SLUG Match
-            operationId: api.slug_match_controller
-            summary: Match SLUGs
-            description: |
-                Given a SLUG(Single Locus Unphased Genotype) in GL String,
-                calculate if they match.
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            properties:
-                                patient_slug:
-                                    description: Patient SLUG in GL String
-                                    type: string
-                                    example: "HLA-A*13:02+HLA-A*30:01"
-                                donor_slug:
-                                    description: Donor SLUG in GL String
-                                    type: string
-                                    example: "HLA-A*13:02+HLA-A*30:01"
+                - GFE
+            operationId: api.gfe_from_who
+            description: For a given WHO Allele name, return the corresponding GFE
+            parameters:
+                -   name: who_name
+                    in: path
+                    description: WHO Allele name
+                    required: true
+                    schema:
+                        type: string
+                    style: simple
+                    example: "HLA-A*01:01:01:08"
             responses:
                 200:
-                    description: SLUG Match Result
+                    description: GFE from WHO allele name
                     content:
                         application/json:
                             schema:
                                 type: object
                                 properties:
-                                    matched:
-                                        description: Match Occurred ?
+                                    locus:
+                                        description: Gene Locus
                                         type: string
-                                        example: "Matched"
-                                    patient_slug:
-                                        description: Patient SLUG in GL String
+                                        example: "HLA-A"
+                                    gfe:
+                                        description: GFE Name
                                         type: string
-                                        example: "HLA-A*13:02+HLA-A*30:01"
-                                    donor_slug:
-                                        description: Donor SLUG in GL String
+                                        example: "HLA-Aw878-8-363-912-830-2901-1044-581-151-324-198-9-316-80-508-43-151"
+                                    who:
+                                        description: WHO Name
                                         type: string
-                                        example: "HLA-A*13:02+HLA-A*30:01"
-                400:
-                    description: Invalid GL String
+                                        example: "HLA-A*01:01:01:08"
+                                    imgt_versions:
+                                        description: IMGT Versions
+                                        type: array
+                                        items:
+                                            type: string
+                                        example:
+                                            - "3460"
+                                            - "3470"
+
+    /gfe/locus/{gene}:
+        get:
+            summary: GFEs and WHO Names for a gene
+            tags:
+                - GFE
+            operationId: api.all_locus_gfe
+            description: Get all GFEs and WHO Names for a gene
+            parameters:
+                -   name: gene
+                    in: path
+                    description: WHO Gene Name
+                    required: true
+                    schema:
+                        type: string
+                    style: simple
+                    example: "HLA-A"
+            responses:
+                200:
+                    description: List of WHO allele names and their corresponding GFEs
                     content:
                         application/json:
                             schema:
                                 type: object
                                 properties:
-                                    message:
-                                        description: Describes what went wrong
+                                    locus:
+                                        description: Gene Locus
                                         type: string
-                                        example: "Invalid HLA locus"
+                                        example: "HLA-A"
+                                    GFEs:
+                                        description: List of WHO alleles and GFE
+                                        type: array
+                                        items:
+                                            type: object
+                                            properties:
+                                                gfe:
+                                                    description: GFE Name
+                                                    type: string
+                                                    example: "HLA-Aw878-8-363-912-830-2901-1044-581-151-324-198-9-316-80-508-43-151"
+                                                who:
+                                                    description: WHO Allele Name
+                                                    type: string
+                                                    example: "HLA-A*01:01:01:08"

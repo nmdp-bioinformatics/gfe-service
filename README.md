@@ -1,20 +1,19 @@
-My Project Template
+GFE Service 2.0
 ===================
 
-
-How to use the template:
-
-1. Create a template by clicking on the "Use this template" button. Make sure to select all branches
-   This will create a new repository with the given name
+1. Make sure the following pre-requites are installed.
+   1. `git`
+   2. `python >= 3.8`
+   3. build tools eg `make
 2. Clone the repository locally
     ```shell
-    git clone git@github.com:pbashyal-nmdp/urban-potato.git
-    cd urban-potato
+    git clone https://github.com/nmdp-bioinformatics/gfe-service.git
+    cd gfe-service
     ```
 3. Make a virtual environment and activate it, run `make venv`
    ```shell
     > make venv
-      python3 -m venv venv --prompt urban-potato-venv
+      python3 -m venv venv --prompt gfe-service-venv
       =====================================================================
     To activate the new virtual environment, execute the following from your shell
     source venv/bin/activate

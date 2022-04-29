@@ -17,7 +17,7 @@ tags:
     -   name: GFE
         description: Create and Retrieve GFE
     -   name: "Sequence Annotation"
-        description: Annotation by sequence
+        description: Annotation by sequence (Coming Soon)
 paths:
     /imgt-versions:
         get:
@@ -44,8 +44,17 @@ paths:
                                             - "3450"
                                             - "3460"
                                             - "3470"
-                404:
-                    description: "Failed to load all db releases"
+                500:
+                    description: "Internal Server Error"
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        description: Error Message
+                                        type: string
+                                        example: "Database Unreachable"
 
     /who/{who_name}:
         get:

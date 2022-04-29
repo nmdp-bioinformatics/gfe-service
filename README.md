@@ -49,26 +49,15 @@ GFE Service 2.0
     ```
     tests
     |-- features
-    |   |-- algorithm
-    |   |   `-- SLUG\ Match.feature
-    |   `-- definition
-    |       `-- Class\ I\ HLA\ Alleles.feature
     |-- steps
-    |   |-- HLA_alleles.py
-    |   `-- SLUG_match.py
     `-- unit
-        `-- test_my_project_template.py
+        `-- test_sample.py
     ```
-8. Package Module files go in the `my_project_template` directory.
+8. Package Module files go in the `gfe_service` directory.
     ```
-    my_project_template
+    gfe_service
     |-- __init__.py
-    |-- algorithm
-    |   `-- match.py
-    |-- model
-    |   |-- allele.py
-    |   `-- slug.py
-    `-- my_project_template.py
+    `-- gfe_service.py
     ```
 9. Run all tests with `make test` or different tests with `make behave` or `make pytest`. `make behave` will generate report files and open the browser to the report.
 10. Use `python app.py` to run the Flask service app in debug mode. Service will be available at http://localhost:8080/

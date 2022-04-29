@@ -1,9 +1,0 @@
-toml==0.10.2
-pytest~=6.2.5
-behave~=1.2.6
-PyYAML~=5.4.1
-Flask~=1.1.4
-neo4j~=4.4.1
-py2neo~=2021.2.3
-connexion~=2.11.1
-setuptools~=49.2.1

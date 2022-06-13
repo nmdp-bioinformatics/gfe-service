@@ -57,7 +57,7 @@ setup(
     license="LGPL 3.0",
     long_description=readme + "\n\n" + history,
     include_package_data=True,
-    keywords="gfe_service",
+    keywords="GFE,HLA",
     name="gfe_service",
     packages=find_packages(include=["gfe_service"]),
     test_suite="tests",

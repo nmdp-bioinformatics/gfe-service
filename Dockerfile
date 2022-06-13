@@ -13,7 +13,7 @@ RUN pip install --no-cache-dir -r requirements-deploy.txt
 COPY api-spec.yaml /app/
 COPY app.py /app/
 COPY api.py /app/
-COPY gfe_service /app/
+COPY gfe_service /app/gfe_service/
 COPY neo4j.yaml /app/
 
 CMD ["gunicorn"  , "--bind", "0.0.0.0:8080", "--worker-tmp-dir", "/dev/shm", "app:app"]

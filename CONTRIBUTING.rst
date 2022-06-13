@@ -38,8 +38,8 @@ and "help wanted" is open to whoever wants to implement it.
 Write Documentation
 ~~~~~~~~~~~~~~~~~~~
 
-My Project Template could always use more documentation, whether as part of the
-official My Project Template docs, in docstrings, or even on the web in blog posts,
+GFE Service could always use more documentation, whether as part of the
+official GFE Service docs, in docstrings, or even on the web in blog posts,
 articles, and such.
 
 Submit Feedback

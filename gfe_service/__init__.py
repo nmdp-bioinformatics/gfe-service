@@ -26,4 +26,4 @@
 """Top-level package for My Project Template."""
 
 __organization__ = "NMDP/CIBMTR Bioinformatics"
-__version__ = "1.0.0"
+__version__ = "2.0.0"

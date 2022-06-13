@@ -13,30 +13,30 @@ servers:
     -   url: 'http://localhost:8080'
 tags:
     -   name: IMGT
-        description: "Available IMGT DB releases"
+        description: "Available IPD-IMGT/HLA Database releases"
     -   name: GFE
         description: Create and Retrieve GFE
     -   name: "Sequence Annotation"
         description: Annotation by sequence (Coming Soon)
 paths:
-    /imgt-versions:
+    /ipd-imgt-hla-versions:
         get:
-            summary: IMGT DB versions in the DB
+            summary: IPD-IMGT/HLA Database versions in the GFE-DB
             tags:
                 - IMGT
             operationId: api.imgt_versions
-            description: Versions of IMGT DB Alleles in GFE DB
+            description: Versions of IPD-IMGT/HLA Database Alleles in GFE DB
 
             responses:
                 200:
-                    description: Version Numbers of Available IMGT DB
+                    description: Version Numbers of Available IPD-IMGT/HLA Database
                     content:
                         application/json:
                             schema:
                                 type: object
                                 properties:
                                     imgt_versions:
-                                        description: IMGT DB Versions
+                                        description: IPD-IMGT/HLA Database Versions
                                         type: array
                                         items:
                                             type: string
@@ -56,17 +56,17 @@ paths:
                                         type: string
                                         example: "Database Unreachable"
 
-    /who/{who_name}:
+    /ipd/{ipd_name}:
         get:
-            summary: Get GFE for a WHO name
+            summary: Get GFE for a IPD-IMGT/HLA HLA name
             tags:
                 - GFE
-            operationId: api.gfe_from_who
-            description: For a given WHO Allele name, return the corresponding GFE
+            operationId: api.gfe_from_ipd
+            description: For a given IPD-IMGT/HLA Allele name, return the corresponding GFE
             parameters:
-                -   name: who_name
+                -   name: ipd_name
                     in: path
-                    description: WHO Allele name
+                    description: IPD-IMGT/HLA Database Allele name
                     required: true
                     schema:
                         type: string
@@ -74,7 +74,7 @@ paths:
                     example: "HLA-A*01:01:01:08"
             responses:
                 200:
-                    description: GFE from WHO allele name
+                    description: GFE from IPD-IMGT/HLA allele name
                     content:
                         application/json:
                             schema:
@@ -88,12 +88,12 @@ paths:
                                         description: GFE Name
                                         type: string
                                         example: "HLA-Aw878-8-363-912-830-2901-1044-581-151-324-198-9-316-80-508-43-151"
-                                    who:
-                                        description: WHO Name
+                                    allele:
+                                        description: IPD-IMGT/HLA Allele Name
                                         type: string
                                         example: "HLA-A*01:01:01:08"
                                     imgt_versions:
-                                        description: IMGT Versions
+                                        description: IPD-IMGT/HLA Database Versions
                                         type: array
                                         items:
                                             type: string
@@ -103,15 +103,15 @@ paths:
 
     /gfe/locus/{gene}:
         get:
-            summary: GFEs and WHO Names for a gene
+            summary: GFEs and IPD Allele Names for a gene
             tags:
                 - GFE
             operationId: api.all_locus_gfe
-            description: Get all GFEs and WHO Names for a gene
+            description: Get all GFEs and IPD Allele Names for a gene
             parameters:
                 -   name: gene
                     in: path
-                    description: WHO Gene Name
+                    description: IPD Allele Gene Name
                     required: true
                     schema:
                         type: string
@@ -119,7 +119,7 @@ paths:
                     example: "HLA-A"
             responses:
                 200:
-                    description: List of WHO allele names and their corresponding GFEs
+                    description: List of IPD Allele names and their corresponding GFEs
                     content:
                         application/json:
                             schema:
@@ -130,7 +130,7 @@ paths:
                                         type: string
                                         example: "HLA-A"
                                     GFEs:
-                                        description: List of WHO alleles and GFE
+                                        description: List of IPD Alleles and GFE
                                         type: array
                                         items:
                                             type: object
@@ -140,7 +140,7 @@ paths:
                                                     type: string
                                                     example: "HLA-Aw878-8-363-912-830-2901-1044-581-151-324-198-9-316-80-508-43-151"
                                                 who:
-                                                    description: WHO Allele Name
+                                                    description: IPD Allele Name
                                                     type: string
                                                     example: "HLA-A*01:01:01:08"
 

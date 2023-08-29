@@ -1,4 +1,4 @@
-FROM python:3.8-slim-buster
+FROM python:3.10-slim-buster
 
 LABEL MAINTAINER="Pradeep Bashyal"
 
@@ -13,7 +13,7 @@ RUN pip install --no-cache-dir -r requirements-deploy.txt
 COPY api-spec.yaml /app/
 COPY app.py /app/
 COPY api.py /app/
-COPY query.py /app/
+COPY gfe_service /app/gfe_service/
 COPY neo4j.yaml /app/
 
 CMD ["gunicorn"  , "--bind", "0.0.0.0:8080", "--worker-tmp-dir", "/dev/shm", "app:app"]

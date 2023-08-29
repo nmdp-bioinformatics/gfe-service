@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #
-#    gfe_service My Project Template.
+#    gfe_service GFE Service.
 #    Copyright (c) 2021 Be The Match operated by National Marrow Donor Program. All Rights Reserved.
 #
 #    This library is free software; you can redistribute it and/or modify it
@@ -23,7 +23,7 @@
 #
 
 
-"""Top-level package for My Project Template."""
+"""Top-level package for gfe-service."""
 
 __organization__ = "NMDP/CIBMTR Bioinformatics"
-__version__ = "2.0.1"
+__version__ = "2.0.0"

@@ -1,6 +1,6 @@
 def imgt_db_versions():
     query = """
-    MATCH (g:GFE)-[e:HAS_WHO]-(w:WHO)
+    MATCH (g:GFE)-[e:HAS_IPD_Allele]-(a:IPD_Allele)
         WITH COLLECT(DISTINCT e.releases) AS releases
         UNWIND REDUCE(output=[], r IN releases| output + r) as dbs
         RETURN COLLECT(DISTINCT dbs) as HLA_DB_VERSIONS
@@ -9,20 +9,20 @@ def imgt_db_versions():
     return query
 
 
-def gfe_from_who():
+def gfe_from_ipd():
     query = """
-    MATCH (g:GFE)-[r:HAS_WHO]-(w:WHO)
-        WHERE w.name = $who_name
-        RETURN g.locus AS locus, g.gfe_name AS gfe, w.name AS who, r.releases AS imgt_versions
+    MATCH (g:GFE)-[r:HAS_IPD_Allele]-(a:IPD_Allele)
+        WHERE a.name = $allele
+        RETURN g.locus AS locus, g.gfe_name AS gfe, a.name AS allele, r.releases AS imgt_versions
     """
     return query
 
 
 def all_gfe_from_locus():
     query = """
-    MATCH (g:GFE)-[:HAS_WHO]-(w:WHO)
+    MATCH (g:GFE)-[:HAS_IPD_Allele]-(a:IPD_Allele)
     WHERE g.locus = $locus
-    RETURN g.gfe_name AS gfe, w.name AS who
+    RETURN g.gfe_name AS gfe, a.name AS allele
     limit 100
     """
     return query
@@ -31,6 +31,6 @@ def all_gfe_from_locus():
 def sequence_from_gfe():
     query = """
     MATCH (g:GFE)-[:HAS_SEQUENCE]-(s:Sequence)
-    WHERE g.gfe_name = $gfe return s.sequence as sequence;
+    WHERE g.name = $gfe return s.sequence as sequence;
     """
     return query

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 #
-#    gfe_service My Project Template.
+#    gfe_service GFE Service.
 #    Copyright (c) 2021 Be The Match operated by National Marrow Donor Program. All Rights Reserved.
 #
 #    This library is free software; you can redistribute it and/or modify it
@@ -57,12 +57,12 @@ setup(
     license="LGPL 3.0",
     long_description=readme + "\n\n" + history,
     include_package_data=True,
-    keywords="gfe_service",
+    keywords="GFE,HLA",
     name="gfe_service",
     packages=find_packages(include=["gfe_service"]),
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/nmdp-bioinformatics/my_project_template",
-    version="0.0.1",
+    version="2.0.0",
     zip_safe=False,
 )

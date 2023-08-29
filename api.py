@@ -1,7 +1,7 @@
 import yaml
 from py2neo import Graph
 
-import query
+from gfe_service import query
 
 with open("neo4j.yaml", "r") as neo4j_file:
     neo_dict = yaml.safe_load(neo4j_file)
@@ -20,14 +20,14 @@ def imgt_versions():
     return {"imgt_versions": dbs}, 200
 
 
-def gfe_from_who(who_name: str):
-    cypher = query.gfe_from_who()
-    response = graph.run(cypher, {"who_name": who_name})
+def gfe_from_ipd(ipd_name: str):
+    cypher = query.gfe_from_ipd()
+    response = graph.run(cypher, {"ipd_name": ipd_name})
     result = response.next()
     return {
         "locus": result["locus"],
         "gfe": result["gfe"],
-        "who": result["who"],
+        "allele": result["allele"],
         "imgt_versions": result["imgt_versions"],
     }, 200
 
@@ -37,7 +37,7 @@ def all_locus_gfe(gene: str):
     response = graph.run(cypher, {"locus": gene})
     allele_gfe_list = []
     for result in response:
-        allele_gfe_list.append({"allele": result["who"], "GFE": result["gfe"]})
+        allele_gfe_list.append({"allele": result["allele"], "GFE": result["gfe"]})
     return {"gene": gene, "GFEs": allele_gfe_list}
 
 

@@ -1,4 +1,4 @@
-Flask==1.1.2
+Flask==2.3.2
 Flask-Testing==0.8.1
 py-gfe==1.1.3
 pytest==6.2.2

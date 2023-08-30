@@ -159,7 +159,7 @@ paths:
                   schema:
                       type: string
                   style: simple
-                  example: "HLA-Aw99-8-363-912-830-2901-128-581-151-324-198-9-316-80-508-43-30"
+                  example: "HLA-Aw0-1-0-29-0-1-0-1-0-1-0-0-0-0-0-0-0"
             responses:
                 200:
                     description: Sequence corresponding to a GFE

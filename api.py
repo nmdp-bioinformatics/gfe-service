@@ -3,11 +3,17 @@ from py2neo import Graph
 
 from gfe_service import query
 
-with open("neo4j.yaml", "r") as neo4j_file:
+with open("config/config.yaml", "r") as neo4j_file:
     neo_dict = yaml.safe_load(neo4j_file)
     neo4j_url = neo_dict["neo4j_url"]
     user = neo_dict["user"]
     password = neo_dict["password"]
+    if not user:
+        raise ValueError("No Neo4j User supplied")
+    if not password:
+        raise ValueError("No Neo4j Password supplied")
+    if not neo4j_url:
+        raise ValueError("No Neo4j URL supplied")
 
 graph = Graph(neo4j_url, user=user, password=password)
 

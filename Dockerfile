@@ -1,4 +1,4 @@
-FROM python:3.10-slim-buster
+FROM --platform=linux/amd64 python:3.10-slim-buster
 
 LABEL MAINTAINER="Pradeep Bashyal"
 
@@ -14,6 +14,6 @@ COPY api-spec.yaml /app/
 COPY app.py /app/
 COPY api.py /app/
 COPY gfe_service /app/gfe_service/
-COPY neo4j.yaml /app/
+COPY config/config.yaml /app/config/
 
 CMD ["gunicorn"  , "--bind", "0.0.0.0:8080", "--worker-tmp-dir", "/dev/shm", "app:app"]

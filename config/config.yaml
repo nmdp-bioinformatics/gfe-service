@@ -1,0 +1,4 @@
+---
+  user: "neo4j"
+  password: ""
+  neo4j_url: "bolt+s://dev-gfedb.b12x.org:7687"

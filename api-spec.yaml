@@ -117,13 +117,11 @@ paths:
                         type: string
                     style: simple
                     example: "HLA-A"
-                -   name: release
+                -   name: version
                     in: query
-                    description: IPD release number
-                    required: false
+                    description: IPD-IMGT/HLA version number
                     schema:
                         type: string
-                    style: simple
                     example: "3530"
             responses:
                 200:
@@ -151,10 +149,12 @@ paths:
                                                     description: IPD Allele Name
                                                     type: string
                                                     example: "HLA-A*01:01:01:08"
-                                                rel:
+                                                release:
                                                     description: IPD release list
-                                                    type: string
-                                                    example: ["3520","3530"]
+                                                    type: array
+                                                    items:
+                                                        type: string
+                                                        example: "3530"
 
     /gfe/sequence/{gfe}:
         get:

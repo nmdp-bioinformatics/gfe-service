@@ -38,12 +38,18 @@ def gfe_from_ipd(ipd_name: str):
     }, 200
 
 
-def all_locus_gfe(gene: str, release: str):
-    cypher = query.all_gfe_from_locus(release)
-    response = graph.run(cypher, {"locus": gene, "release": release})
+def all_locus_gfe(gene: str, version: str = ""):
+    cypher = query.all_gfe_from_locus(version)
+    response = graph.run(cypher, {"locus": gene, "release": version})
     allele_gfe_list = []
     for result in response:
-        allele_gfe_list.append({"allele": result["allele"], "GFE": result["gfe"], "release": result["release"]})
+        allele_gfe_list.append(
+            {
+                "allele": result["allele"],
+                "GFE": result["gfe"],
+                "release": result["release"],
+            }
+        )
     return {"gene": gene, "GFEs": allele_gfe_list}
 
 

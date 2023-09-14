@@ -18,18 +18,18 @@ def gfe_from_ipd():
     return query
 
 
-def all_gfe_from_locus(release: str):
-    if release == "":
+def all_gfe_from_locus(version: str):
+    if version:
         query = """
       MATCH (g:GFE)-[r:HAS_IPD_ALLELE]-(a:IPD_Allele)
-      WHERE g.locus = $locus
-      RETURN g.name AS gfe, a.name AS allele, r.releases AS release
+      WHERE g.locus = $locus AND $version IN r.releases
+      RETURN g.name AS gfe, a.name AS allele, r.releases AS releases
       """
     else:
         query = """
       MATCH (g:GFE)-[r:HAS_IPD_ALLELE]-(a:IPD_Allele)
-      WHERE g.locus = $locus AND $release IN r.releases
-      RETURN g.name AS gfe, a.name AS allele, r.releases AS release
+      WHERE g.locus = $locus
+      RETURN g.name AS gfe, a.name AS allele, r.releases AS releases
       """
     return query
 

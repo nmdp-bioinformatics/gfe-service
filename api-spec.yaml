@@ -149,7 +149,7 @@ paths:
                                                     description: IPD Allele Name
                                                     type: string
                                                     example: "HLA-A*01:01:01:08"
-                                                release:
+                                                releases:
                                                     description: IPD release list
                                                     type: array
                                                     items:

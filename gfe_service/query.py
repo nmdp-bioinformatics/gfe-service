@@ -21,8 +21,8 @@ def gfe_from_ipd():
 def all_gfe_from_locus():
     query = """
     MATCH (g:GFE)-[r:HAS_IPD_ALLELE]-(a:IPD_Allele)
-    WHERE g.locus = $locus AND $version IN r.releases
-    RETURN g.name AS gfe, a.name AS allele
+    WHERE g.locus = $locus AND $release IN r.releases
+    RETURN g.name AS gfe, a.name AS allele, r.releases AS release
     """
     return query
 

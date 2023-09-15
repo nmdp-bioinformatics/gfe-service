@@ -40,3 +40,17 @@ def sequence_from_gfe():
     WHERE g.name = $gfe return s.sequence as sequence
     """
     return query
+
+
+def features_from_allele():
+    query = """
+    MATCH (a:IPD_Allele)-[:HAS_IPD_ALLELE]-(g:GFE)-[:HAS_FEATURE]-(f:Feature)
+    WHERE (a.name = $ipd_name)
+    RETURN DISTINCT
+        g.name as gfe,
+        f.term as term,
+        f.accession as accession,
+        f.rank as rank,
+        f.sequence as sequence
+    """
+    return query

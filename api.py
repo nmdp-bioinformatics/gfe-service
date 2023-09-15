@@ -58,3 +58,44 @@ def gfe_sequence(gfe: str):
     response = graph.run(cypher, {"gfe": gfe})
     result = response.next()
     return {"sequence": result["sequence"], "GFE": gfe}
+
+
+def features_from_allele(ipd_name: str):
+    cypher = query.features_from_allele()
+    response = graph.run(cypher, {"ipd_name": ipd_name})
+    features = response.data()
+
+    gfes = set([feature["gfe"] for feature in features])
+    if len(gfes) != 1:
+        raise Exception("Only one GFE is expected!")
+    gfe = gfes.pop()
+    features = [
+        {k: v for k, v in feature.items() if k != "gfe"} for feature in features
+    ]
+
+    # TODO: Build in ranks of features into database
+    # so genetic ordering is built in already (5' utr - (exon - intron)s - 3' UTR)
+    features_ordered = (
+        [feature for feature in features if feature["term"] == "FIVE_PRIME_UTR"]
+        + (
+            [
+                feature
+                for rank in range(1, 9)
+                for feature in (
+                    [
+                        feature
+                        for feature in features
+                        if feature["term"] == "EXON" and feature["rank"] == str(rank)
+                    ]
+                    + [
+                        feature
+                        for feature in features
+                        if feature["term"] == "INTRON" and feature["rank"] == str(rank)
+                    ]
+                )
+            ]
+        )
+        + [feature for feature in features if feature["term"] == "THREE_PRIME_UTR"]
+    )
+
+    return {"gfe": gfe, "features": features_ordered}

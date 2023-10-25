@@ -6,4 +6,4 @@ seq-ann==1.1.0
 connexion[swagger-ui]==2.7.0
 swagger-spec-validator==2.7.3
 uWSGI==2.0.19.1
-Werkzeug==2.2.3
+Werkzeug==3.0.1
